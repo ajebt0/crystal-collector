@@ -1,11 +1,9 @@
-# render.yaml - конфигурация для деплоя на Render
-
 services:
   # Бэкенд сервер
   - type: web
     name: crystal-collector-backend
     runtime: node
-    plan: free
+    plan: starter
     buildCommand: npm install && npx prisma generate
     startCommand: node server/index.js
     healthCheckPath: /health
@@ -18,12 +16,14 @@ services:
           property: connectionString
       - key: PORT
         value: 3000
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_uedcyt7KOgU5@ep-hidden-dream-aszl8sh5-pooler.c-4.eu-central-1.aws.neon.tech/neondb?sslmode=require
 
   # Фронтенд статика
   - type: web
     name: crystal-collector-frontend
     runtime: static
-    plan: free
+    plan: starter
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
     envVars:
@@ -32,5 +32,7 @@ services:
 
 databases:
   - name: crystal-collector-db
-    plan: free
+    plan: starter
     databaseName: crystal_collector
+    user: crystal_user
+    ipAllowList: []  # Разрешить подключения только из Render
